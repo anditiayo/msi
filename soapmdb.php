@@ -59,6 +59,8 @@
 				$buffer = explode("\r\n",$buffer);
 
 				$conn	= odbc_connect("Driver={Microsoft Access Driver (*.mdb)};Dbq=D:\Ab1.mdb", "", "");
+				$get_kar 	= "SELECT * from ABSF01 where karyawan = '$PIN'";
+				 $result 	= odbc_exec($conn,$get_kar) or die (odbc_errormsg()); 
 
 				for($a=1;$a<count($buffer);$a++)
 				{
