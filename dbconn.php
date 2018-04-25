@@ -1,0 +1,1 @@
+<?php $conn= odbc_connect("Driver={Microsoft Access Driver (*.mdb)};Dbq=D:\att2000.mdb", "admin", "");?>
