@@ -59,7 +59,6 @@
 				$buffer = explode("\r\n",$buffer);
 
 				$conn	= odbc_connect("Driver={Microsoft Access Driver (*.mdb)};Dbq=D:\Ab1.mdb", "", "");
-				
 
 				for($a=1;$a<count($buffer);$a++)
 				{
