@@ -97,10 +97,10 @@
     <div id="innerdiv">
         
         <?php 
-    $start = '2018-05-01';
-    $end = '2018-05-30';
+    $start = '2018-04-01';
+    $end = '2018-04-30';
     $db     = mysqli_connect('localhost', 'root', 'toor', 'smarthr');
-    $get  = mysqli_query($db,"SELECT code,name FROM employee WHERE code between '1900' and '2200' order by code asc LIMIT 0,100");
+    $get  = mysqli_query($db,"SELECT code,name FROM employee WHERE code between '1900' and '2200' order by code asc LIMIT 0,60");
     //$get    = mysqli_query($db,"SELECT code,name FROM employee order by code asc  LIMIT 0,50");
     $datediff = strtotime($end) - strtotime($start);
     $datediff = floor($datediff/(60*60*24));
@@ -267,10 +267,17 @@
                     if($masuk == '00.00' && $keluar == '00.00'){
                         echo '00:00|00.00';
                     }else{
+                        if($shift_1_in >= $masuk){
+                            $shift = '1';
+                        }else if($masuk == '00.00'){
+                            $shift = '';
+                        }else{
+                            $shift = '';
+                        }
                         //echo $interval->format('%H,%i |');
                         echo '<a style="color:red">'.$masuk.'|'.$keluar.'</a>';
                         
-                        echo '<div class="tooltip">Shift';
+                        echo '<div class="tooltip"> '.$shift;
                             echo '<span class="tooltiptext">Tooltip text</span>';
                         echo '</div>';
 
