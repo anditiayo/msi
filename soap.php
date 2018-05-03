@@ -60,9 +60,9 @@ if ($Connect) {
 $buffer = Parse_Data($buffer,"<GetAttLogResponse>","</GetAttLogResponse>");
 $buffer = explode("\r\n",$buffer);
 
-$db = mysqli_connect('localhost', 'root', 'toor', 'ci_fp');
+$db = mysqli_connect('localhost', 'root', 'toor', 'smarthr');
 
-for($a=0;$a<count($buffer);$a++){
+for($a=1;$a<count($buffer)-1;$a++){
 
   $data     = Parse_Data($buffer[$a],"<Row>","</Row>");
   $PIN      = Parse_Data($data,"<PIN>","</PIN>");
@@ -76,12 +76,12 @@ for($a=0;$a<count($buffer);$a++){
 			/* $sql = "INSERT INTO data_absen (pin, date_time,tgl,waktu,day, ver,status) 
 			Values ('$PIN', '$DateTime','$date','$time','$day','$Verified','$Status')"; */
 			
-          $sql      = "INSERT INTO data_absen (pin, date_time,tgl,waktu,day, ver,status)
+          $sql      = "INSERT INTO msi_log_data (pin, date_time,tgl,waktu,day, ver,status)
                             SELECT '$PIN', '$DateTime','$date','$time','$day','$Verified','$Status'
-                            FROM data_absen
+                            FROM msi_log_data
                             WHERE NOT EXISTS(
                                 SELECT pin, date_time,ver,status
-                                FROM data_absen
+                                FROM msi_log_data
                                 WHERE pin = '$PIN'
                                   AND date_time = '$DateTime'
                                   AND ver = '$Verified'
@@ -96,9 +96,11 @@ for($a=0;$a<count($buffer);$a++){
               echo "Error: " . $sql . "<br>" . mysqli_error($conn);
             }
           }
-		  
-		  
-          $percent = intval($a/(count($buffer)-2) * 100)."%";
+		      if(isset($PIN)!=NULL || isset($PIN)!=''){
+             $percent = intval($a/(count($buffer)-2) * 100)."%";
+          }
+		     // echo $a.'-'.count($buffer).'-'. $PIN .'</br>';
+         
     
     // Javascript for updating the progress bar and information
     echo '<script language="javascript">
