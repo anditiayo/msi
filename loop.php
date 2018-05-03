@@ -70,6 +70,28 @@
             background:#EEE;
            
         }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
 </style>
 <div id="outerdiv">
     <div id="innerdiv">
@@ -78,19 +100,10 @@
     $start = '2018-05-01';
     $end = '2018-05-30';
     $db     = mysqli_connect('localhost', 'root', 'toor', 'smarthr');
-    $get  = mysqli_query($db,"SELECT code,name FROM employee WHERE code between '1900' and '2200' order by code asc ");
-    //$get    = mysqli_query($db,"SELECT code,name FROM employee order by code asc  LIMIT 0,20");
+    $get  = mysqli_query($db,"SELECT code,name FROM employee WHERE code between '1900' and '2200' order by code asc LIMIT 0,100");
+    //$get    = mysqli_query($db,"SELECT code,name FROM employee order by code asc  LIMIT 0,50");
     $datediff = strtotime($end) - strtotime($start);
     $datediff = floor($datediff/(60*60*24));
-    
-    function get_masuk($code,$true){
-        $queries    = "SELECT date_time FROM msi_log_data where pin = '$code' and tgl = '$true' and status = 0 LIMIT 1";
-        $get_code   = mysqli_query($db,$queries);
-        $klo        = mysqli_fetch_array($get_code);
-        echo '<td>'.$klo['date_time'].'</td>'; 
-        
-        
-    }
 
     function differenceInHours($startdate,$enddate){
     $starttimestamp = strtotime($startdate);
@@ -167,14 +180,43 @@
             echo "<td class='headcol'>";
                 echo $data['name'];
                 echo '</td>'; 
+                
+              /*  $dari       = date("Y/m/d", strtotime($start));
+                $sampai     = date("Y/m/d", strtotime($end));
+                $queries    = "SELECT date_time,day FROM msi_log_data where pin = '$code' and tgl between '$dari' and '$sampai'";
+                
+                $get_code   = mysqli_query($db,$queries);
+                //$klo        = mysqli_fetch_array($get_code);
+                
+
+
+                while ($row = mysqli_fetch_assoc($get_code)) {
+                    echo '<td class="long">'.date("H:i", strtotime($row['date_time'])).'</td>';
+                    /*foreach ($row as $key => $value) {
+                        if ($key == 'date_time') {
+                            echo '<td class="long">'.date("H:i", strtotime($value)).'</td>';
+                        }else{
+                             
+                        }
+                        
+                    }
+                }
+
+                
+    */
                 for($i = 0; $i < $datediff + 1; $i++)
                 {
                     
                     $true       = date("Y/m/d", strtotime($start . ' + ' . $i . 'day'));
-                    $queries    = "SELECT date_time FROM msi_log_data where pin = '$code' and tgl = '$true' and status = 0 order by tgl asc LIMIT 1";
+                    $day        = date("w", strtotime($start . ' + ' . $i . 'day'));
+                    $queries    = "SELECT date_time,day FROM msi_log_data where pin = '$code' and tgl = '$true' and status = 0 order by tgl asc LIMIT 1";
                     $get_code   = mysqli_query($db,$queries);
                     $klo        = mysqli_fetch_array($get_code);
+                   
+                    //$queries    = "SELECT date_time,status,day FROM msi_log_data where pin = '$code' and tgl = '$true' order by tgl  LIMIT 0,2"; 
                     
+
+                   // echo date("H:i", strtotime($klo[0])).'</br>';
                     $in                 = date("H:i", strtotime($klo['date_time'])); 
                     
                     $office_1_in        = date("H:i", strtotime("08:30"));
@@ -195,10 +237,10 @@
 
                     
 
-                    $queries2   = "SELECT date_time FROM msi_log_data where pin = '$code' and tgl = '$true' and status = 1 order by tgl asc ";
+                    $queries2   = "SELECT date_time,day FROM msi_log_data where pin = '$code' and tgl = '$true' and status = 1 order by tgl asc ";
                     $get_code2  = mysqli_query($db,$queries2);
                     $klo2       = mysqli_fetch_array($get_code2);
-                    
+
                     $datetime1 = strtotime($klo['date_time']);
                     $datetime2 = strtotime($klo2['date_time']);
                     
@@ -222,13 +264,16 @@
                     }
                    
 
-                    
-
                     if($masuk == '00.00' && $keluar == '00.00'){
                         echo '00:00|00.00';
                     }else{
                         //echo $interval->format('%H,%i |');
                         echo '<a style="color:red">'.$masuk.'|'.$keluar.'</a>';
+                        
+                        echo '<div class="tooltip">Shift';
+                            echo '<span class="tooltiptext">Tooltip text</span>';
+                        echo '</div>';
+
                     echo '</td>'; 
                     //echo '<td>'.date("m/d", strtotime($start . ' + ' . $i . 'day')) .'</td>'; 
                     }
